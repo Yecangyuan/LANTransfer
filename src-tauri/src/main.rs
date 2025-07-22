@@ -10,10 +10,10 @@ mod network;
 use device::{Device, DeviceManager};
 use file_transfer::FileTransferManager;
 use network::NetworkManager;
-// use tray::{create_system_tray, handle_system_tray_event, show_tray_notification};
+// use tray::{create_system_tray, show_tray_notification};
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
-use tauri::{Manager, State, WindowEvent};
+use tauri::State;
 use tokio::sync::Mutex;
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -42,16 +42,19 @@ async fn start_device_scan(
 ) -> Result<(), String> {
     let network_manager = state.network_manager.clone();
     let device_manager = state.device_manager.clone();
-    
+
     tokio::spawn(async move {
         let mut nm = network_manager.lock().await;
         let dm = device_manager.lock().await;
-        
-        if let Err(e) = nm.start_discovery(&app_handle, dm.get_current_device()).await {
+
+        if let Err(e) = nm
+            .start_discovery(&app_handle, dm.get_current_device())
+            .await
+        {
             log::error!("Failed to start device discovery: {}", e);
         }
     });
-    
+
     Ok(())
 }
 
@@ -64,7 +67,7 @@ async fn send_files(
 ) -> Result<(), String> {
     let transfer_manager = state.transfer_manager.clone();
     let device_manager = state.device_manager.lock().await;
-    
+
     // 查找目标设备
     let target_device = device_manager
         .get_devices()
@@ -72,62 +75,71 @@ async fn send_files(
         .find(|d| d.id == target_device_id)
         .cloned()
         .ok_or("Target device not found")?;
-    
+
     drop(device_manager);
-    
+
     tokio::spawn(async move {
         let mut tm = transfer_manager.lock().await;
         if let Err(e) = tm.send_files(target_device, file_paths, app_handle).await {
             log::error!("Failed to send files: {}", e);
         }
     });
-    
+
     Ok(())
 }
 
 #[tokio::main]
 async fn main() {
     env_logger::init();
-    
+
     let device_manager = Arc::new(Mutex::new(DeviceManager::new().await));
     let transfer_manager = Arc::new(Mutex::new(FileTransferManager::new()));
     let network_manager = Arc::new(Mutex::new(NetworkManager::new()));
-    
+
     let app_state = AppState {
         device_manager,
         transfer_manager: transfer_manager.clone(),
         network_manager,
     };
-    
+
     tauri::Builder::default()
+        .plugin(tauri_plugin_notification::init())
+        .plugin(tauri_plugin_dialog::init())
+        .plugin(tauri_plugin_fs::init())
+        .plugin(tauri_plugin_os::init())
+        .plugin(tauri_plugin_shell::init())
+        .plugin(tauri_plugin_global_shortcut::Builder::new().build())
         .manage(app_state)
         .invoke_handler(tauri::generate_handler![
             get_device_info,
             start_device_scan,
             send_files
         ])
-        // .system_tray(create_system_tray())
-        // .on_system_tray_event(handle_system_tray_event)
-        // .on_window_event(|event| {
-        //     if let WindowEvent::CloseRequested { api, .. } = event.event() {
+                // .on_window_event(|window, event| {
+        //     if let tauri::WindowEvent::CloseRequested { api, .. } = event {
         //         // 阻止窗口关闭，改为隐藏到托盘
         //         api.prevent_close();
-        //         event.window().hide().unwrap();
+        //         window.hide().unwrap();
         //         
         //         // 显示托盘通知
         //         show_tray_notification(
-        //             &event.window().app_handle(),
+        //             &window.app_handle(),
         //             "LANTransfer",
         //             "应用已最小化到系统托盘"
         //         );
         //     }
         // })
         .setup(move |app| {
+            // 创建系统托盘 (临时禁用)
+            // if let Err(e) = create_system_tray(&app.handle()) {
+            //     log::error!("Failed to create system tray: {}", e);
+            // }
+            
             let handle = app.handle();
             let tm = transfer_manager.clone();
             tokio::spawn(async move {
                 let ftm = tm.lock().await;
-                if let Err(e) = ftm.start_file_server(handle).await {
+                if let Err(e) = ftm.start_file_server(handle.clone()).await {
                     log::error!("Failed to start file server: {}", e);
                 }
             });
@@ -135,4 +147,4 @@ async fn main() {
         })
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
-} 
+}
