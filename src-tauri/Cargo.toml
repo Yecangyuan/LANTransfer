@@ -13,7 +13,7 @@ edition = "2021"
 tauri-build = { version = "1.5", features = [] }
 
 [dependencies]
-tauri = { version = "1.6", features = [ "window-unmaximize", "window-close", "notification-all", "os-all", "dialog-open", "path-all", "window-hide", "global-shortcut-all", "window-show", "fs-all", "window-unminimize", "window-maximize", "shell-open", "dialog-save", "window-start-dragging", "window-minimize", "system-tray", "menu"] }
+tauri = { version = "1.6", features = [ "window-unmaximize", "window-close", "notification-all", "os-all", "dialog-open", "path-all", "window-hide", "global-shortcut-all", "window-show", "fs-all", "window-unminimize", "window-maximize", "shell-open", "dialog-save", "window-start-dragging", "window-minimize"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 tokio = { version = "1.0", features = ["full"] }

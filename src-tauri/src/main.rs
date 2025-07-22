@@ -10,7 +10,7 @@ mod tray;
 use device::{Device, DeviceManager};
 use file_transfer::FileTransferManager;
 use network::NetworkManager;
-use tray::{create_system_tray, handle_system_tray_event, handle_window_event, show_tray_notification};
+use tray::{create_system_tray, handle_system_tray_event, show_tray_notification};
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 use tauri::{Manager, State, WindowEvent};

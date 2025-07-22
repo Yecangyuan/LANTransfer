@@ -1,6 +1,6 @@
 use tauri::{
     AppHandle, CustomMenuItem, Manager, SystemTray, SystemTrayEvent, SystemTrayMenu,
-    SystemTrayMenuItem, SystemTraySubmenu, WindowEvent,
+    SystemTrayMenuItem, WindowEvent,
 };
 
 pub fn create_system_tray() -> SystemTray {
@@ -13,16 +13,9 @@ pub fn create_system_tray() -> SystemTray {
     let start_scan = CustomMenuItem::new("start_scan".to_string(), "开始扫描设备");
     let transfer_history = CustomMenuItem::new("history".to_string(), "传输历史");
     
-    // 设置子菜单
+    // 设置菜单项
     let dark_mode = CustomMenuItem::new("dark_mode".to_string(), "深色主题");
     let auto_start = CustomMenuItem::new("auto_start".to_string(), "开机启动");
-    let settings_submenu = SystemTraySubmenu::new(
-        "设置",
-        SystemTrayMenu::new()
-            .add_item(dark_mode)
-            .add_native_item(SystemTrayMenuItem::Separator)
-            .add_item(auto_start),
-    );
     
     let tray_menu = SystemTrayMenu::new()
         .add_item(show)
@@ -31,7 +24,8 @@ pub fn create_system_tray() -> SystemTray {
         .add_item(start_scan)
         .add_item(transfer_history)
         .add_native_item(separator.clone())
-        .add_submenu(settings_submenu)
+        .add_item(dark_mode)
+        .add_item(auto_start)
         .add_native_item(separator)
         .add_item(quit);
 
@@ -112,20 +106,16 @@ pub fn handle_system_tray_event(app: &AppHandle, event: SystemTrayEvent) {
     }
 }
 
-// 窗口事件处理
-pub fn handle_window_event(event: &WindowEvent) {
-    match event {
-        WindowEvent::CloseRequested { api, .. } => {
-            // 阻止窗口关闭，改为隐藏到托盘
-            api.prevent_close();
-            // 获取窗口引用并隐藏
-            if let Some(window) = api.window().get_window("main") {
-                let _ = window.hide();
-            }
-        }
-        _ => {}
-    }
-}
+// 窗口事件处理（这个函数现在在main.rs中直接处理）
+// pub fn handle_window_event(event: &WindowEvent) {
+//     match event {
+//         WindowEvent::CloseRequested { api, .. } => {
+//             // 阻止窗口关闭，改为隐藏到托盘
+//             api.prevent_close();
+//         }
+//         _ => {}
+//     }
+// }
 
 // 更新托盘图标状态
 pub fn update_tray_status(app: &AppHandle, is_transferring: bool) {
