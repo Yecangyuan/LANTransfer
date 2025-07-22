@@ -446,9 +446,13 @@ function App() {
         </div>
 
         {/* 设备发现区域 */}
-        <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
+        <div className={`rounded-xl shadow-lg p-6 mb-6 ${
+          darkMode ? 'bg-gray-800' : 'bg-white'
+        }`}>
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-gray-800 flex items-center">
+            <h2 className={`text-lg font-semibold flex items-center ${
+              darkMode ? 'text-white' : 'text-gray-800'
+            }`}>
               <Users className="w-5 h-5 mr-2 text-green-500" />
               发现的设备
             </h2>
@@ -469,19 +473,27 @@ function App() {
                 key={device.id}
                 className={`p-4 rounded-lg border-2 transition-all ${
                   device.is_online 
-                    ? 'border-green-200 bg-green-50 hover:border-green-300' 
-                    : 'border-gray-200 bg-gray-50'
+                    ? darkMode 
+                      ? 'border-green-600 bg-green-900/20 hover:border-green-500' 
+                      : 'border-green-200 bg-green-50 hover:border-green-300'
+                    : darkMode
+                      ? 'border-gray-600 bg-gray-700/50'
+                      : 'border-gray-200 bg-gray-50'
                 }`}
               >
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center space-x-2">
                     {getDeviceIcon(device.device_type)}
-                    <span className="font-medium text-gray-800">{device.name}</span>
+                    <span className={`font-medium ${
+                      darkMode ? 'text-white' : 'text-gray-800'
+                    }`}>{device.name}</span>
                   </div>
                   <div className={`w-2 h-2 rounded-full ${device.is_online ? 'bg-green-500' : 'bg-gray-400'}`} />
                 </div>
                 
-                <p className="text-sm text-gray-600 mb-3">{device.ip}</p>
+                <p className={`text-sm mb-3 ${
+                  darkMode ? 'text-gray-300' : 'text-gray-600'
+                }`}>{device.ip}</p>
                 
                 <button
                   onClick={() => sendFiles(device.id)}
@@ -495,10 +507,16 @@ function App() {
             ))}
             
             {devices.filter(d => d.id !== myDeviceInfo?.id).length === 0 && (
-              <div className="col-span-full text-center py-8 text-gray-500">
-                <Users className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+              <div className={`col-span-full text-center py-8 ${
+                darkMode ? 'text-gray-400' : 'text-gray-500'
+              }`}>
+                <Users className={`w-12 h-12 mx-auto mb-3 ${
+                  darkMode ? 'text-gray-600' : 'text-gray-300'
+                }`} />
                 <p>未发现设备</p>
-                <p className="text-sm">点击扫描设备开始查找</p>
+                <p className={`text-sm ${
+                  darkMode ? 'text-gray-500' : 'text-gray-600'
+                }`}>点击扫描设备开始查找</p>
               </div>
             )}
           </div>

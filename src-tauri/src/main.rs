@@ -135,11 +135,11 @@ async fn main() {
             //     log::error!("Failed to create system tray: {}", e);
             // }
             
-            let handle = app.handle();
+            let handle = app.handle().clone();
             let tm = transfer_manager.clone();
             tokio::spawn(async move {
                 let ftm = tm.lock().await;
-                if let Err(e) = ftm.start_file_server(handle.clone()).await {
+                if let Err(e) = ftm.start_file_server(handle).await {
                     log::error!("Failed to start file server: {}", e);
                 }
             });
