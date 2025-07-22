@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>局域网传输工具 - 图标预览</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #4f46e5;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #6b7280;
+            margin-bottom: 40px;
+            font-size: 1.2em;
+        }
+        
+        .icon-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .icon-item {
+            text-align: center;
+            padding: 20px;
+            border-radius: 15px;
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .icon-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        .icon-item img {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 15px;
+        }
+        
+        .icon-item h3 {
+            margin: 0 0 10px 0;
+            color: #374151;
+            font-size: 1.2em;
+        }
+        
+        .icon-item p {
+            margin: 0;
+            color: #6b7280;
+            font-size: 0.9em;
+        }
+        
+        .svg-preview {
+            text-align: center;
+            margin: 40px 0;
+            padding: 30px;
+            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+            border-radius: 15px;
+        }
+        
+        .svg-preview svg {
+            max-width: 300px;
+            height: auto;
+            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.1));
+        }
+        
+        .features {
+            background: #f8fafc;
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 40px;
+        }
+        
+        .features h2 {
+            color: #374151;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .features ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .features li {
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+        }
+        
+        .features li:last-child {
+            border-bottom: none;
+        }
+        
+        .features li::before {
+            content: "✅";
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+        
+        .download-section {
+            text-align: center;
+            margin-top: 40px;
+            padding: 30px;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            border-radius: 15px;
+            color: white;
+        }
+        
+        .download-btn {
+            display: inline-block;
+            background: white;
+            color: #6366f1;
+            padding: 15px 30px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: bold;
+            margin: 10px;
+            transition: transform 0.3s ease;
+        }
+        
+        .download-btn:hover {
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 局域网传输工具</h1>
+        <p class="subtitle">现代化跨平台文件传输解决方案</p>
+        
+        <div class="svg-preview">
+            <h2>🎨 应用图标设计</h2>
+            <!-- SVG图标会被直接嵌入 -->
+            <svg width="256" height="256" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- 背景圆形 -->
+              <circle cx="128" cy="128" r="120" fill="url(#backgroundGradient)" stroke="url(#borderGradient)" stroke-width="4"/>
+              
+              <!-- 中央网络节点 -->
+              <circle cx="128" cy="128" r="20" fill="url(#centerGradient)" stroke="#ffffff" stroke-width="2"/>
+              
+              <!-- 周围设备节点 -->
+              <!-- 设备1 - 左上 -->
+              <circle cx="80" cy="80" r="12" fill="url(#deviceGradient)" stroke="#ffffff" stroke-width="1.5"/>
+              <rect x="74" y="74" width="12" height="9" rx="2" fill="#ffffff" opacity="0.8"/>
+              
+              <!-- 设备2 - 右上 -->
+              <circle cx="176" cy="80" r="12" fill="url(#deviceGradient)" stroke="#ffffff" stroke-width="1.5"/>
+              <rect x="170" y="74" width="12" height="9" rx="2" fill="#ffffff" opacity="0.8"/>
+              
+              <!-- 设备3 - 左下 -->
+              <circle cx="80" cy="176" r="12" fill="url(#deviceGradient)" stroke="#ffffff" stroke-width="1.5"/>
+              <rect x="74" y="170" width="12" height="9" rx="2" fill="#ffffff" opacity="0.8"/>
+              
+              <!-- 设备4 - 右下 -->
+              <circle cx="176" cy="176" r="12" fill="url(#deviceGradient)" stroke="#ffffff" stroke-width="1.5"/>
+              <rect x="170" y="170" width="12" height="9" rx="2" fill="#ffffff" opacity="0.8"/>
+              
+              <!-- 连接线 -->
+              <line x1="108" y1="128" x2="92" y2="92" stroke="url(#lineGradient)" stroke-width="3" opacity="0.8"/>
+              <line x1="148" y1="128" x2="164" y2="92" stroke="url(#lineGradient)" stroke-width="3" opacity="0.8"/>
+              <line x1="108" y1="128" x2="92" y2="164" stroke="url(#lineGradient)" stroke-width="3" opacity="0.8"/>
+              <line x1="148" y1="128" x2="164" y2="164" stroke="url(#lineGradient)" stroke-width="3" opacity="0.8"/>
+              
+              <!-- 传输动画点 -->
+              <circle cx="100" cy="100" r="3" fill="#ffffff" opacity="0.9">
+                <animateMotion dur="2s" repeatCount="indefinite">
+                  <path d="M 0,0 L 28,28 L 0,0"/>
+                </animateMotion>
+              </circle>
+              
+              <circle cx="156" cy="100" r="3" fill="#ffffff" opacity="0.9">
+                <animateMotion dur="2.5s" repeatCount="indefinite">
+                  <path d="M 0,0 L -28,28 L 0,0"/>
+                </animateMotion>
+              </circle>
+              
+              <!-- 文件传输图标 -->
+              <g transform="translate(118, 118)">
+                <!-- 文件图标 -->
+                <rect x="0" y="2" width="10" height="12" rx="1" fill="#ffffff" opacity="0.9"/>
+                <path d="M8 2 L8 5 L11 5" stroke="#4f46e5" stroke-width="1" fill="none"/>
+                
+                <!-- 箭头 -->
+                <path d="M12 8 L16 8 M14 6 L16 8 L14 10" stroke="#10b981" stroke-width="2" fill="none" stroke-linecap="round"/>
+              </g>
+              
+              <!-- 渐变定义 -->
+              <defs>
+                <!-- 背景渐变 -->
+                <linearGradient id="backgroundGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
+                  <stop offset="50%" style="stop-color:#8b5cf6;stop-opacity:1" />
+                  <stop offset="100%" style="stop-color:#06b6d4;stop-opacity:1" />
+                </linearGradient>
+                
+                <!-- 边框渐变 -->
+                <linearGradient id="borderGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.3" />
+                  <stop offset="100%" style="stop-color:#ffffff;stop-opacity:0.1" />
+                </linearGradient>
+                
+                <!-- 中心节点渐变 -->
+                <radialGradient id="centerGradient" cx="50%" cy="30%">
+                  <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
+                  <stop offset="100%" style="stop-color:#e5e7eb;stop-opacity:1" />
+                </radialGradient>
+                
+                <!-- 设备节点渐变 -->
+                <radialGradient id="deviceGradient" cx="50%" cy="30%">
+                  <stop offset="0%" style="stop-color:#10b981;stop-opacity:1" />
+                  <stop offset="100%" style="stop-color:#059669;stop-opacity:1" />
+                </radialGradient>
+                
+                <!-- 连接线渐变 -->
+                <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.8" />
+                  <stop offset="100%" style="stop-color:#e5e7eb;stop-opacity:0.6" />
+                </linearGradient>
+              </defs>
+            </svg>
+        </div>
+        
+        <div class="icon-grid">
+            <div class="icon-item">
+                <img src="src-tauri/icons/32x32.png" alt="32x32 PNG">
+                <h3>32×32 PNG</h3>
+                <p>小尺寸图标，适用于任务栏和通知</p>
+            </div>
+            
+            <div class="icon-item">
+                <img src="src-tauri/icons/128x128.png" alt="128x128 PNG">
+                <h3>128×128 PNG</h3>
+                <p>标准尺寸图标，适用于应用列表</p>
+            </div>
+            
+            <div class="icon-item">
+                <img src="src-tauri/icons/128x128@2x.png" alt="256x256 PNG">
+                <h3>256×256 PNG</h3>
+                <p>高分辨率图标，适用于Retina显示器</p>
+            </div>
+            
+            <div class="icon-item">
+                <img src="src-tauri/icons/icon.png" alt="512x512 PNG">
+                <h3>512×512 PNG</h3>
+                <p>超高清图标，适用于各种场景</p>
+            </div>
+        </div>
+        
+        <div class="features">
+            <h2>🌟 应用特性</h2>
+            <ul>
+                <li>自动发现局域网内的设备</li>
+                <li>支持多文件同时传输</li>
+                <li>实时显示传输进度</li>
+                <li>现代化的用户界面设计</li>
+                <li>跨平台支持 (Windows、macOS、Linux)</li>
+                <li>高性能 Rust 后端</li>
+                <li>安全的局域网传输</li>
+                <li>零配置即用</li>
+            </ul>
+        </div>
+        
+        <div class="download-section">
+            <h2>📥 下载安装包</h2>
+            <p>选择适合你操作系统的版本</p>
+            <a href="src-tauri/target/release/bundle/dmg/局域网传输工具_0.1.0_aarch64.dmg" class="download-btn">
+                🍎 macOS (Apple Silicon)
+            </a>
+            <a href="#" class="download-btn" style="opacity: 0.6;">
+                🪟 Windows (即将发布)
+            </a>
+            <a href="#" class="download-btn" style="opacity: 0.6;">
+                🐧 Linux (即将发布)
+            </a>
+        </div>
+    </div>
+</body>
+</html> 

@@ -1,0 +1,38 @@
+[package]
+name = "lan-transfer"
+version = "0.1.0"
+description = "跨平台局域网文件传输工具"
+authors = ["Your Name"]
+license = "MIT"
+repository = ""
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[build-dependencies]
+tauri-build = { version = "1.5", features = [] }
+
+[dependencies]
+tauri = { version = "1.6", features = [ "window-unmaximize", "window-close", "notification-all", "os-all", "dialog-open", "path-all", "window-hide", "global-shortcut-all", "window-show", "fs-all", "window-unminimize", "window-maximize", "shell-open", "dialog-save", "window-start-dragging", "window-minimize"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+tokio = { version = "1.0", features = ["full"] }
+uuid = { version = "1.0", features = ["v4"] }
+local-ip-address = "0.6"
+hostname = "0.3"
+mdns-sd = "0.7"
+dirs = "5.0"
+log = "0.4"
+env_logger = "0.10"
+
+[[bin]]
+name = "lan-transfer"
+path = "src/main.rs"
+
+[features]
+# by default Tauri runs in production mode
+# when `tauri dev` runs it is executed with `cargo run --no-default-features` if `devPath` is an URL
+default = ["custom-protocol"]
+# this feature is used for production builds or when `devPath` points to the filesystem
+# DO NOT REMOVE!!
+custom-protocol = ["tauri/custom-protocol"] 
