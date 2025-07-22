@@ -17,7 +17,9 @@ import {
   X,
   Settings,
   Globe,
-  Activity
+  Activity,
+  Sun,
+  Moon
 } from 'lucide-react';
 import { PerformanceMonitor } from './components/PerformanceMonitor';
 import { i18nManager, Language, getTranslations } from './i18n';
@@ -333,7 +335,7 @@ function App() {
                 }`}
                 title={darkMode ? t.lightMode : t.darkMode}
               >
-                {darkMode ? '☀️' : '🌙'}
+                {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
               </button>
             </div>
             
