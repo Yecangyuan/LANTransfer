@@ -14,8 +14,13 @@ import {
   RefreshCw,
   Check,
   AlertCircle,
-  X
+  X,
+  Settings,
+  Globe,
+  Activity
 } from 'lucide-react';
+import { PerformanceMonitor } from './components/PerformanceMonitor';
+import { i18nManager, Language, getTranslations } from './i18n';
 
 interface Device {
   id: string;
@@ -39,6 +44,9 @@ function App() {
   const [myDeviceInfo, setMyDeviceInfo] = useState<Device | null>(null);
   const [isDragOver, setIsDragOver] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
+  const [currentLanguage, setCurrentLanguage] = useState<Language>('zh-CN');
+  const [showPerformanceMonitor, setShowPerformanceMonitor] = useState(false);
+  // const [showSettings, setShowSettings] = useState(false);
   const dropZoneRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -68,10 +76,35 @@ function App() {
 
     // 获取本设备信息
     initializeDevice();
+    
+    // 初始化语言设置
+    setCurrentLanguage(i18nManager.getCurrentLanguage());
+    
+    // 监听托盘事件
+    const setupTrayListeners = async () => {
+      const unlistenTheme = await listen('tray-toggle-theme', () => {
+        setDarkMode(prev => !prev);
+      });
+      
+      const unlistenStartScan = await listen('tray-start-scan', () => {
+        startScanning();
+      });
+      
+      const unlistenShowHistory = await listen('tray-show-history', () => {
+        console.log('Show transfer history');
+      });
+      
+      return [unlistenTheme, unlistenStartScan, unlistenShowHistory];
+    };
+    
+    const trayListenersPromise = setupTrayListeners();
 
     return () => {
       unlisten.then(f => f());
       unlistenProgress.then(f => f());
+      trayListenersPromise.then(listeners => {
+        listeners.forEach(unlisten => unlisten());
+      });
     };
   }, []);
 
@@ -162,6 +195,25 @@ function App() {
     setDarkMode(!darkMode);
   };
 
+  // 获取翻译文本
+  const t = getTranslations(currentLanguage);
+
+  // 语言切换 (暂时保留，未来可能使用)
+  // const changeLanguage = (lang: Language) => {
+  //   setCurrentLanguage(lang);
+  //   i18nManager.changeLanguage(lang);
+  // };
+
+  // 设置相关处理 (暂时保留)
+  const toggleSettings = () => {
+    console.log('Settings clicked');
+    // setShowSettings(!showSettings);
+  };
+
+  const togglePerformanceMonitor = () => {
+    setShowPerformanceMonitor(!showPerformanceMonitor);
+  };
+
   const getDeviceIcon = (deviceType: string) => {
     switch (deviceType.toLowerCase()) {
       case 'mobile':
@@ -221,26 +273,69 @@ function App() {
               </div>
               <div>
                 <h1 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'}`}>
-                  局域网传输工具
+                  {t.appTitle}
                 </h1>
                 <p className={`${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                  快速安全的文件传输
+                  {t.appSubtitle}
                 </p>
               </div>
             </div>
             
-            {/* 主题切换按钮 */}
-            <button
-              onClick={toggleDarkMode}
-              className={`p-2 rounded-lg transition-colors ${
-                darkMode 
-                  ? 'bg-gray-700 hover:bg-gray-600 text-yellow-400' 
-                  : 'bg-gray-100 hover:bg-gray-200 text-gray-600'
-              }`}
-              title={darkMode ? '切换到浅色主题' : '切换到深色主题'}
-            >
-              {darkMode ? '☀️' : '🌙'}
-            </button>
+            {/* 控制按钮组 */}
+            <div className="flex items-center space-x-2">
+              {/* 语言切换 */}
+              <div className="relative">
+                <button
+                  className={`p-2 rounded-lg transition-colors ${
+                    darkMode 
+                      ? 'bg-gray-700 hover:bg-gray-600 text-gray-300' 
+                      : 'bg-gray-100 hover:bg-gray-200 text-gray-600'
+                  }`}
+                  title={t.language}
+                >
+                  <Globe className="w-4 h-4" />
+                </button>
+              </div>
+              
+              {/* 性能监控 */}
+              <button
+                onClick={togglePerformanceMonitor}
+                className={`p-2 rounded-lg transition-colors ${
+                  darkMode 
+                    ? 'bg-gray-700 hover:bg-gray-600 text-gray-300' 
+                    : 'bg-gray-100 hover:bg-gray-200 text-gray-600'
+                }`}
+                title="性能监控"
+              >
+                <Activity className="w-4 h-4" />
+              </button>
+              
+              {/* 设置 */}
+              <button
+                onClick={toggleSettings}
+                className={`p-2 rounded-lg transition-colors ${
+                  darkMode 
+                    ? 'bg-gray-700 hover:bg-gray-600 text-gray-300' 
+                    : 'bg-gray-100 hover:bg-gray-200 text-gray-600'
+                }`}
+                title={t.settings}
+              >
+                <Settings className="w-4 h-4" />
+              </button>
+              
+              {/* 主题切换按钮 */}
+              <button
+                onClick={toggleDarkMode}
+                className={`p-2 rounded-lg transition-colors ${
+                  darkMode 
+                    ? 'bg-gray-700 hover:bg-gray-600 text-yellow-400' 
+                    : 'bg-gray-100 hover:bg-gray-200 text-gray-600'
+                }`}
+                title={darkMode ? t.lightMode : t.darkMode}
+              >
+                {darkMode ? '☀️' : '🌙'}
+              </button>
+            </div>
             
             {myDeviceInfo && (
               <div className="text-right">
@@ -270,7 +365,7 @@ function App() {
             darkMode ? 'text-white' : 'text-gray-800'
           }`}>
             <FolderOpen className="w-5 h-5 mr-2 text-blue-500" />
-            选择文件
+            {t.selectFiles}
           </h2>
           
           {/* 拖拽提示区域 */}
@@ -442,6 +537,13 @@ function App() {
           </div>
         )}
       </div>
+      
+      {/* 性能监控弹窗 */}
+      <PerformanceMonitor
+        darkMode={darkMode}
+        isVisible={showPerformanceMonitor}
+        onClose={() => setShowPerformanceMonitor(false)}
+      />
     </div>
   );
 }

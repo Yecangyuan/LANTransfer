@@ -5,13 +5,15 @@ mod device;
 mod file_transfer;
 mod network;
 mod crypto;
+mod tray;
 
 use device::{Device, DeviceManager};
 use file_transfer::FileTransferManager;
 use network::NetworkManager;
+use tray::{create_system_tray, handle_system_tray_event, handle_window_event, show_tray_notification};
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
-use tauri::{Manager, State};
+use tauri::{Manager, State, WindowEvent};
 use tokio::sync::Mutex;
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -104,6 +106,22 @@ async fn main() {
             start_device_scan,
             send_files
         ])
+        .system_tray(create_system_tray())
+        .on_system_tray_event(handle_system_tray_event)
+        .on_window_event(|event| {
+            if let WindowEvent::CloseRequested { api, .. } = event.event() {
+                // 阻止窗口关闭，改为隐藏到托盘
+                api.prevent_close();
+                event.window().hide().unwrap();
+                
+                // 显示托盘通知
+                show_tray_notification(
+                    &event.window().app_handle(),
+                    "LANTransfer",
+                    "应用已最小化到系统托盘"
+                );
+            }
+        })
         .setup(move |app| {
             let handle = app.handle();
             let tm = transfer_manager.clone();
