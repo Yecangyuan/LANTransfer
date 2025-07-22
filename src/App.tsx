@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { invoke } from '@tauri-apps/api/tauri';
 import { listen } from '@tauri-apps/api/event';
 import { open } from '@tauri-apps/api/dialog';
@@ -37,6 +37,9 @@ function App() {
   const [selectedFiles, setSelectedFiles] = useState<string[]>([]);
   const [transferProgress, setTransferProgress] = useState<TransferProgress[]>([]);
   const [myDeviceInfo, setMyDeviceInfo] = useState<Device | null>(null);
+  const [isDragOver, setIsDragOver] = useState(false);
+  const [darkMode, setDarkMode] = useState(false);
+  const dropZoneRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     // 监听设备发现事件
@@ -129,6 +132,36 @@ function App() {
     }
   };
 
+  // 拖拽处理函数
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragOver(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragOver(false);
+  };
+
+  const handleDrop = async (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragOver(false);
+
+    const files = Array.from(e.dataTransfer.files);
+    if (files.length > 0) {
+      const filePaths = files.map(file => (file as any).path || file.name);
+      setSelectedFiles(prev => [...new Set([...prev, ...filePaths])]);
+    }
+  };
+
+  // 主题切换
+  const toggleDarkMode = () => {
+    setDarkMode(!darkMode);
+  };
+
   const getDeviceIcon = (deviceType: string) => {
     switch (deviceType.toLowerCase()) {
       case 'mobile':
@@ -171,20 +204,43 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
+    <div className={`min-h-screen transition-colors duration-300 p-6 ${
+      darkMode 
+        ? 'bg-gradient-to-br from-gray-900 to-gray-800' 
+        : 'bg-gradient-to-br from-blue-50 to-indigo-100'
+    }`}>
       <div className="max-w-4xl mx-auto">
         {/* 头部 */}
-        <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
+        <div className={`rounded-xl shadow-lg p-6 mb-6 transition-colors duration-300 ${
+          darkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-800'
+        }`}>
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div className="p-2 bg-blue-500 text-white rounded-lg">
                 <Wifi className="w-6 h-6" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-gray-800">局域网传输工具</h1>
-                <p className="text-gray-600">快速安全的文件传输</p>
+                <h1 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'}`}>
+                  局域网传输工具
+                </h1>
+                <p className={`${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                  快速安全的文件传输
+                </p>
               </div>
             </div>
+            
+            {/* 主题切换按钮 */}
+            <button
+              onClick={toggleDarkMode}
+              className={`p-2 rounded-lg transition-colors ${
+                darkMode 
+                  ? 'bg-gray-700 hover:bg-gray-600 text-yellow-400' 
+                  : 'bg-gray-100 hover:bg-gray-200 text-gray-600'
+              }`}
+              title={darkMode ? '切换到浅色主题' : '切换到深色主题'}
+            >
+              {darkMode ? '☀️' : '🌙'}
+            </button>
             
             {myDeviceInfo && (
               <div className="text-right">
@@ -197,11 +253,48 @@ function App() {
         </div>
 
         {/* 文件选择区域 */}
-        <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
-          <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+        <div 
+          ref={dropZoneRef}
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
+          className={`rounded-xl shadow-lg p-6 mb-6 transition-all duration-300 ${
+            darkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-800'
+          } ${
+            isDragOver 
+              ? 'border-2 border-blue-500 border-dashed bg-blue-50 dark:bg-blue-900/20 scale-105' 
+              : 'border-2 border-transparent'
+          }`}
+        >
+          <h2 className={`text-lg font-semibold mb-4 flex items-center ${
+            darkMode ? 'text-white' : 'text-gray-800'
+          }`}>
             <FolderOpen className="w-5 h-5 mr-2 text-blue-500" />
             选择文件
           </h2>
+          
+          {/* 拖拽提示区域 */}
+          <div className={`border-2 border-dashed rounded-lg p-8 mb-4 text-center transition-all duration-300 ${
+            isDragOver 
+              ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20' 
+              : darkMode 
+                ? 'border-gray-600 bg-gray-700/50' 
+                : 'border-gray-300 bg-gray-50'
+          }`}>
+            <Upload className={`w-12 h-12 mx-auto mb-4 ${
+              isDragOver ? 'text-blue-500' : darkMode ? 'text-gray-400' : 'text-gray-400'
+            }`} />
+            <p className={`text-lg font-medium mb-2 ${
+              isDragOver ? 'text-blue-600' : darkMode ? 'text-gray-300' : 'text-gray-600'
+            }`}>
+              {isDragOver ? '松开鼠标即可添加文件' : '拖拽文件到此处'}
+            </p>
+            <p className={`text-sm ${
+              darkMode ? 'text-gray-400' : 'text-gray-500'
+            }`}>
+              或者点击下方按钮选择文件
+            </p>
+          </div>
           
           <div className="flex items-center space-x-4 mb-4">
             <button
@@ -212,16 +305,43 @@ function App() {
               <span>选择文件</span>
             </button>
             
-            <span className="text-gray-600">
+            <span className={darkMode ? 'text-gray-300' : 'text-gray-600'}>
               {selectedFiles.length > 0 ? `已选择 ${selectedFiles.length} 个文件` : '未选择文件'}
             </span>
+            
+            {selectedFiles.length > 0 && (
+              <button
+                onClick={() => setSelectedFiles([])}
+                className={`text-sm px-3 py-1 rounded-lg transition-colors ${
+                  darkMode 
+                    ? 'text-red-400 hover:bg-red-900/20' 
+                    : 'text-red-600 hover:bg-red-50'
+                }`}
+              >
+                清空文件
+              </button>
+            )}
           </div>
 
           {selectedFiles.length > 0 && (
-            <div className="bg-gray-50 rounded-lg p-4 max-h-32 overflow-y-auto">
+            <div className={`rounded-lg p-4 max-h-32 overflow-y-auto ${
+              darkMode ? 'bg-gray-700/50' : 'bg-gray-50'
+            }`}>
               {selectedFiles.map((file, index) => (
-                <div key={index} className="text-sm text-gray-700 truncate">
-                  {file.split('/').pop() || file}
+                <div key={index} className={`text-sm truncate flex items-center justify-between py-1 ${
+                  darkMode ? 'text-gray-300' : 'text-gray-700'
+                }`}>
+                  <span>{file.split('/').pop() || file}</span>
+                  <button
+                    onClick={() => setSelectedFiles(files => files.filter((_, i) => i !== index))}
+                    className={`ml-2 text-xs px-2 py-1 rounded transition-colors ${
+                      darkMode 
+                        ? 'text-red-400 hover:bg-red-900/20' 
+                        : 'text-red-600 hover:bg-red-100'
+                    }`}
+                  >
+                    移除
+                  </button>
                 </div>
               ))}
             </div>

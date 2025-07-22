@@ -4,6 +4,7 @@
 mod device;
 mod file_transfer;
 mod network;
+mod crypto;
 
 use device::{Device, DeviceManager};
 use file_transfer::FileTransferManager;
