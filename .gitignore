@@ -9,7 +9,6 @@ yarn-debug.log*
 yarn-error.log*
 .npm
 .yarn/
-package-lock.json
 
 # 构建输出
 dist/
