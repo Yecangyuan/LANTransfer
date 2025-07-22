@@ -4,7 +4,6 @@ use aes_gcm::{
 };
 use rand::RngCore;
 use sha2::{Sha256, Digest};
-use std::io::{Read, Write};
 
 pub struct FileEncryption {
     cipher: Aes256Gcm,
@@ -22,8 +21,7 @@ impl FileEncryption {
         let cipher = Aes256Gcm::new(key);
         
         // 生成随机nonce
-        let mut nonce = vec![0u8; 12];
-        OsRng.fill_bytes(&mut nonce);
+        let nonce = Aes256Gcm::generate_nonce(&mut OsRng).to_vec();
         
         Self { cipher, nonce }
     }
