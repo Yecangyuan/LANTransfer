@@ -57,7 +57,7 @@ jobs:
           workspaces: './src-tauri -> target'
 
       - name: Install frontend dependencies
-        run: npm ci
+        uses: bahmutov/npm-install@v1
 
       - name: Build the application
         uses: tauri-apps/tauri-action@v0
