@@ -1,0 +1,6 @@
+Annotations
+2 errors
+build-tauri (ubuntu-22.04, x86_64)
+Command "npm ["run","tauri","build"]" failed with exit code 134
+build-tauri (windows-latest, x86_64)
+Command "npm ["run","tauri","build"]" failed with exit code 1
