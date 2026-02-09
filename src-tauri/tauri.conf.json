@@ -10,7 +10,7 @@
     "targets": "all"
   },
   "productName": "局域网传输工具",
-  "mainBinaryName": "局域网传输工具",
+  "mainBinaryName": "lan-transfer",
   "version": "0.1.0",
   "identifier": "com.lantransfer.app",
   "plugins": {},
