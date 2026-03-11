@@ -22,7 +22,6 @@
   "mainBinaryName": "lan-transfer",
   "version": "0.1.0",
   "identifier": "com.lantransfer.app",
-  "capabilities": ["migrated"],
   "plugins": {},
   "app": {
     "withGlobalTauri": false,
@@ -39,7 +38,8 @@
       }
     ],
     "security": {
-      "csp": null
+      "csp": null,
+      "capabilities": ["capabilities/migrated.json", "capabilities/desktop.json"]
     }
   }
 }
